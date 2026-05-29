@@ -5,6 +5,8 @@ struct ContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+
+            // Header
             HStack {
                 Circle()
                     .fill(usage.statusColor)
@@ -17,53 +19,69 @@ struct ContentView: View {
                         .font(.caption)
                 }
                 .buttonStyle(.borderless)
+                .help("Refresh now")
             }
 
             Divider()
 
-            if let remaining = usage.fiveHourRemaining {
+            // Session row
+            if let pct = usage.sessionRemaining {
                 UsageRowView(
                     label: "5-hour session",
-                    percent: remaining,
-                    timeLeft: UsageStore.format(duration: usage.fiveHourSecondsLeft)
+                    percent: pct,
+                    resetDate: usage.sessionResetDate
                 )
             } else {
-                Text("5-hour session unavailable")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                placeholderRow(label: "5-hour session")
             }
 
             Divider()
 
-            if let remaining = usage.weekRemaining {
+            // Weekly row
+            if let pct = usage.weekRemaining {
                 UsageRowView(
                     label: "This week",
-                    percent: remaining,
-                    timeLeft: UsageStore.format(duration: usage.weekSecondsLeft)
+                    percent: pct,
+                    resetDate: usage.weekResetDate
                 )
             } else {
-                Text("Weekly quota unavailable")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                placeholderRow(label: "This week")
             }
 
+            // Error state
             if let error = usage.lastError {
                 Divider()
-                Text(error)
-                    .font(.caption2)
-                    .foregroundStyle(.red)
-                    .fixedSize(horizontal: false, vertical: true)
+                HStack(alignment: .top, spacing: 4) {
+                    Image(systemName: "exclamationmark.circle")
+                        .font(.caption2)
+                        .foregroundStyle(.red)
+                    Text(error)
+                        .font(.caption2)
+                        .foregroundStyle(.red)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            // Connect button when not signed in
+            if usage.needsLogin {
+                Button("Connect to Claude…") {
+                    ConnectWindowController.shared.show(store: usage)
+                }
+                .buttonStyle(.borderless)
+                .font(.caption)
+                .foregroundStyle(Color.accentColor)
             }
 
             Divider()
 
+            // Footer
             HStack {
-                if let fetchedAt = usage.lastFetchedAt {
-                    Text("Updated \(fetchedAt, style: .relative) ago")
+                if let t = usage.lastFetchedAt {
+                    Text("Updated \(t, style: .relative) ago")
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 } else {
-                    Text("Not fetched yet")
+                    Text(usage.lastError == nil ? "Loading…" : "Not connected")
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 }
@@ -74,5 +92,15 @@ struct ContentView: View {
             }
         }
         .padding(12)
+    }
+
+    private func placeholderRow(label: String) -> some View {
+        HStack {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Spacer()
+            ProgressView().controlSize(.mini)
+        }
     }
 }

@@ -1,0 +1,66 @@
+# ─────────────────────────────────────────────────────────────
+# Secrets & credentials — NEVER commit these
+# ─────────────────────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.mobileprovision
+*.cer
+*.certSigningRequest
+secrets.*
+*.secret
+.env
+.env.*
+credentials.json
+.credentials.json
+
+# ─────────────────────────────────────────────────────────────
+# macOS
+# ─────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# ─────────────────────────────────────────────────────────────
+# Xcode — user-specific state (not shareable, machine-bound)
+# ─────────────────────────────────────────────────────────────
+xcuserdata/
+*.xcuserstate
+*.xcuserdatad/
+*.xcscmblueprint
+*.xccheckout
+
+# Xcode build output
+build/
+DerivedData/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+Package.resolved
+
+# ─────────────────────────────────────────────────────────────
+# CocoaPods / Carthage (not used now, but future-proof)
+# ─────────────────────────────────────────────────────────────
+Pods/
+Carthage/Build/
+
+# ─────────────────────────────────────────────────────────────
+# Editors & tooling
+# ─────────────────────────────────────────────────────────────
+.idea/
+*.swp
+*~
+
+# ─────────────────────────────────────────────────────────────
+# Claude Code local session state
+# ─────────────────────────────────────────────────────────────
+.claude/

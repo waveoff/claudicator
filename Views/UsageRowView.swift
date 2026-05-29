@@ -2,8 +2,8 @@ import SwiftUI
 
 struct UsageRowView: View {
     let label: String
-    let percent: Double
-    let timeLeft: String
+    let percent: Double    // 0–100, remaining
+    let resetDate: Date?   // when this window resets
 
     private var barColor: Color {
         if percent > 50 { return .green }
@@ -28,7 +28,6 @@ struct UsageRowView: View {
                     RoundedRectangle(cornerRadius: 3)
                         .fill(Color.secondary.opacity(0.2))
                         .frame(height: 6)
-
                     RoundedRectangle(cornerRadius: 3)
                         .fill(barColor)
                         .frame(width: geometry.size.width * (percent / 100), height: 6)
@@ -36,9 +35,14 @@ struct UsageRowView: View {
             }
             .frame(height: 6)
 
-            Text("Resets in \(timeLeft)")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
+            // Live countdown, re-rendered locally each minute. TimelineView
+            // only updates this subtree — it never republishes UsageStore, so
+            // the MenuBarExtra popover stays stable.
+            TimelineView(.periodic(from: .now, by: 60)) { _ in
+                Text(UsageStore.resetString(to: resetDate))
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
         }
     }
 }

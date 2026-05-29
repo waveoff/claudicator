@@ -1,58 +1,59 @@
 import Foundation
 import Security
 
-enum TokenProviderError: LocalizedError {
-    case keychainItemNotFound(OSStatus)
-    case invalidPayload
-
-    var errorDescription: String? {
-        switch self {
-        case .keychainItemNotFound:
-            return "Claude Code credentials were not found in Keychain. Please sign in to Claude Code and try again."
-        case .invalidPayload:
-            return "Claude Code credentials were found but could not be decoded."
-        }
-    }
+/// OAuth tokens obtained from the PKCE flow, persisted in the macOS Keychain
+/// under Claudicator's own service name (not Claude Code's).
+struct OAuthTokens: Codable {
+    let accessToken: String
+    let refreshToken: String?
+    let expiresAt: Date?
+    let subscriptionType: String?
 }
 
-struct ClaudeCredentials: Decodable {
-    struct OAuthData: Decodable {
-        let accessToken: String
-        let expiresAt: TimeInterval?
-        let subscriptionType: String?
-    }
+/// Reads/writes Claudicator's own OAuth tokens in the Keychain.
+enum KeychainStore {
+    static let service = "com.ariross.claudicator"
+    static let account = "oauth-tokens"
 
-    let claudeAiOauth: OAuthData
-}
-
-final class ClaudeTokenProvider {
-    static let shared = ClaudeTokenProvider()
-
-    private let serviceName = "Claude Code-credentials"
-
-    private init() {}
-
-    func currentAccessToken() throws -> String {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: serviceName,
-            kSecReturnData as String: true,
-            kSecMatchLimit as String: kSecMatchLimitOne
+    static func save(_ tokens: OAuthTokens) throws {
+        let data = try JSONEncoder().encode(tokens)
+        let base: [String: Any] = [
+            kSecClass as String:       kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account
         ]
-
-        var result: CFTypeRef?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
-
+        SecItemDelete(base as CFDictionary)   // replace any existing
+        var add = base
+        add[kSecValueData as String] = data
+        let status = SecItemAdd(add as CFDictionary, nil)
         guard status == errSecSuccess else {
-            throw TokenProviderError.keychainItemNotFound(status)
+            throw NSError(domain: "Keychain", code: Int(status),
+                          userInfo: [NSLocalizedDescriptionKey: "Keychain save failed (OSStatus \(status))."])
         }
+    }
 
-        guard let data = result as? Data,
-              let payload = try? JSONDecoder().decode(ClaudeCredentials.self, from: data)
-        else {
-            throw TokenProviderError.invalidPayload
-        }
+    static func load() -> OAuthTokens? {
+        let query: [String: Any] = [
+            kSecClass as String:       kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
+            kSecReturnData as String:  true,
+            kSecMatchLimit as String:  kSecMatchLimitOne
+        ]
+        var item: CFTypeRef?
+        guard SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess,
+              let data = item as? Data,
+              let tokens = try? JSONDecoder().decode(OAuthTokens.self, from: data)
+        else { return nil }
+        return tokens
+    }
 
-        return payload.claudeAiOauth.accessToken
+    static func clear() {
+        let query: [String: Any] = [
+            kSecClass as String:       kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account
+        ]
+        SecItemDelete(query as CFDictionary)
     }
 }

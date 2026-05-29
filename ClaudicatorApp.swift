@@ -9,9 +9,6 @@ struct ClaudicatorApp: App {
             ContentView()
                 .environmentObject(usageStore)
                 .frame(width: 280)
-                .onAppear {
-                    usageStore.startPolling()
-                }
         }
     }
 }
