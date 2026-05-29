@@ -2,14 +2,10 @@ import SwiftUI
 
 struct UsageRowView: View {
     let label: String
-    let percent: Double    // 0–100, remaining
+    let percent: Double    // 0–100, used
     let resetDate: Date?   // when this window resets
 
-    private var barColor: Color {
-        if percent > 50 { return .green }
-        if percent > 20 { return .orange }
-        return .red
-    }
+    private var barColor: Color { UsageStore.quotaColor(used: percent) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -18,7 +14,7 @@ struct UsageRowView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text(String(format: "%.0f%%", percent))
+                Text(String(format: "%.0f%% used", percent))
                     .font(.caption)
                     .fontWeight(.medium)
             }

@@ -18,7 +18,7 @@ enum OAuthConfig {
 /// 4. `validAccessToken()` → returns a fresh token, refreshing if expired
 ///
 /// Tokens are cached in memory after the first Keychain read so we don't hit
-/// the Keychain (and trigger an OS password prompt) on every 90s poll.
+/// the Keychain (and trigger an OS password prompt) on every poll.
 final class OAuthService {
     static let shared = OAuthService()
     private init() {}

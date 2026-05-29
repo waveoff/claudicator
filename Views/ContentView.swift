@@ -15,17 +15,23 @@ struct ContentView: View {
                     .font(.headline)
                 Spacer()
                 Button(action: usage.refresh) {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.caption)
+                    if usage.isRefreshing {
+                        ProgressView()
+                            .controlSize(.mini)
+                    } else {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.caption)
+                    }
                 }
                 .buttonStyle(.borderless)
+                .disabled(usage.isRefreshing)
                 .help("Refresh now")
             }
 
             Divider()
 
             // Session row
-            if let pct = usage.sessionRemaining {
+            if let pct = usage.sessionUsed {
                 UsageRowView(
                     label: "5-hour session",
                     percent: pct,
@@ -38,7 +44,7 @@ struct ContentView: View {
             Divider()
 
             // Weekly row
-            if let pct = usage.weekRemaining {
+            if let pct = usage.weekUsed {
                 UsageRowView(
                     label: "This week",
                     percent: pct,

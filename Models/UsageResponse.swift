@@ -1,12 +1,13 @@
 import Foundation
 
 /// One quota window from `GET https://api.anthropic.com/api/oauth/usage`.
-/// `utilization` is the percentage USED (0–100); remaining = 100 − utilization.
+/// `utilization` is the percentage USED (0–100) — the same figure shown at
+/// claude.ai/settings/usage. We surface "used" directly rather than inverting.
 struct UsageWindow: Decodable {
     let utilization: Double
     let resets_at: String?
 
-    var remaining: Double { max(0, 100 - utilization) }
+    var used: Double { min(100, max(0, utilization)) }
 }
 
 /// Top-level response from the OAuth usage endpoint. All Claude products

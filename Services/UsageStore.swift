@@ -14,21 +14,28 @@ final class UsageStore: ObservableObject {
 
     // MARK: Published state
 
-    @Published var sessionRemaining: Double?
+    @Published var sessionUsed: Double?
     @Published var sessionResetDate: Date?
-    @Published var weekRemaining: Double?
+    @Published var weekUsed: Double?
     @Published var weekResetDate: Date?
     @Published var lastFetchedAt: Date?
     @Published var lastError: String?
     @Published var subscriptionType: String?
     @Published var needsLogin: Bool = false
+    @Published var isRefreshing: Bool = false
 
     // MARK: Private
 
     private var pollingTimer: AnyCancellable?
 
+    /// When rate-limited (HTTP 429), suppress *polled* fetches until this time
+    /// so we honor the server's Retry-After instead of hammering on each poll.
+    /// A manual refresh still goes through (user intent).
+    private var backoffUntil: Date?
+
     private static let usageURL = URL(string: "https://api.anthropic.com/api/oauth/usage")!
-    private static let pollInterval: TimeInterval = 90
+    private static let pollInterval: TimeInterval = 150   // 2.5 min — balances freshness against the shared endpoint's limit
+    private static let defaultBackoff: TimeInterval = 120
 
     // MARK: Init
 
@@ -42,11 +49,28 @@ final class UsageStore: ObservableObject {
         refresh()
         pollingTimer = Timer.publish(every: Self.pollInterval, on: .main, in: .common)
             .autoconnect()
-            .sink { [weak self] _ in self?.refresh() }
+            .sink { [weak self] _ in
+                guard let self else { return }
+                if let until = self.backoffUntil, Date() < until {
+                    Log.usage.info("Skipping poll — backing off \(Int(until.timeIntervalSinceNow), privacy: .public)s more")
+                    return
+                }
+                self.refresh()
+            }
     }
 
+    /// Manual + polled entry point. The in-flight guard means rapid taps (or a
+    /// poll tick landing mid-refresh) are no-ops rather than spawning
+    /// overlapping fetches — which previously raced on token refresh and the
+    /// @Published writes and could crash the MenuBarExtra. `isRefreshing` also
+    /// drives the button spinner. Called on the main thread (UI + .main timer).
     func refresh() {
-        Task { await fetch() }
+        guard !isRefreshing else { return }
+        isRefreshing = true
+        Task {
+            await fetch()
+            await MainActor.run { self.isRefreshing = false }
+        }
     }
 
     // MARK: Networking
@@ -79,6 +103,16 @@ final class UsageStore: ObservableObject {
                 await MainActor.run { self.lastError = "No HTTP response." }
                 return
             }
+            if http.statusCode == 429 {
+                let wait = Self.retryAfter(from: http) ?? Self.defaultBackoff
+                let until = Date().addingTimeInterval(wait)
+                Log.usage.error("Rate limited (429); backing off \(Int(wait), privacy: .public)s")
+                await MainActor.run {
+                    self.backoffUntil = until
+                    self.lastError = "Rate limited — paused for \(Int(wait))s."
+                }
+                return
+            }
             guard (200...299).contains(http.statusCode) else {
                 let body = String(data: data, encoding: .utf8)?
                     .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -92,18 +126,19 @@ final class UsageStore: ObservableObject {
             }
 
             let usage = try JSONDecoder().decode(UsageResponse.self, from: data)
-            Log.usage.info("Fetched usage: session=\(usage.five_hour?.remaining ?? -1)% week=\(usage.seven_day?.remaining ?? -1)%")
+            Log.usage.info("Fetched usage (used): session=\(usage.five_hour.map { String(format: "%.0f", $0.used) } ?? "—", privacy: .public)% week=\(usage.seven_day.map { String(format: "%.0f", $0.used) } ?? "—", privacy: .public)%")
             await MainActor.run {
+                self.backoffUntil     = nil
                 self.lastError        = nil
                 self.lastFetchedAt    = Date()
                 self.subscriptionType = OAuthService.shared.subscriptionType
                 if let w = usage.five_hour {
-                    self.sessionRemaining = w.remaining
+                    self.sessionUsed      = w.used
                     self.sessionResetDate = Self.parseDate(w.resets_at)
                 }
                 if let w = usage.seven_day {
-                    self.weekRemaining = w.remaining
-                    self.weekResetDate = Self.parseDate(w.resets_at)
+                    self.weekUsed         = w.used
+                    self.weekResetDate    = Self.parseDate(w.resets_at)
                 }
             }
         } catch {
@@ -113,11 +148,42 @@ final class UsageStore: ObservableObject {
 
     // MARK: Computed
 
-    var statusColor: Color {
-        let pct = sessionRemaining ?? 100
-        if pct > 50 { return .green }
-        if pct > 20 { return .orange }
-        return .red
+    var statusColor: Color { Self.quotaColor(used: sessionUsed ?? 0) }
+
+    /// The popover palette, matching claude.ai's usage page:
+    ///   0–80% → accent blue · 80–90% → warning amber · 90%+ → danger red.
+    /// Shared by the popover bars and the header dot so they always agree.
+    /// (The menu bar arc uses its own logic — native template tint below the
+    /// danger threshold, fixed red at/above — see MenuBarLabel.)
+    static let warningThreshold: Double = 80
+    static let dangerThreshold:  Double = 90
+
+    static func quotaColor(used: Double) -> Color {
+        if used >= dangerThreshold  { return .claudeDanger }
+        if used >= warningThreshold { return .claudeWarning }
+        return .claudeAccent
+    }
+
+    /// Parse a `Retry-After` response header — either delta-seconds
+    /// ("120") or an HTTP date — into seconds from now. Clamped to a sane
+    /// range so a bogus value can't pause us for hours or retry instantly.
+    private static func retryAfter(from http: HTTPURLResponse) -> TimeInterval? {
+        guard let raw = (http.value(forHTTPHeaderField: "Retry-After") ??
+                         http.value(forHTTPHeaderField: "retry-after"))?
+            .trimmingCharacters(in: .whitespaces) else { return nil }
+
+        let seconds: TimeInterval?
+        if let s = TimeInterval(raw) {
+            seconds = s
+        } else {
+            let fmt = DateFormatter()
+            fmt.locale = Locale(identifier: "en_US_POSIX")
+            fmt.timeZone = TimeZone(identifier: "GMT")
+            fmt.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+            seconds = fmt.date(from: raw).map { $0.timeIntervalSinceNow }
+        }
+        guard let value = seconds else { return nil }
+        return min(max(value, 5), 3_600)   // 5s … 1h
     }
 
     // MARK: Date / duration helpers
@@ -147,4 +213,15 @@ final class UsageStore: ObservableObject {
         if hours > 0 { return "Resets in \(hours)h \(mins)m" }
         return "Resets in \(mins)m"
     }
+}
+
+// MARK: - claude.ai usage palette
+
+extension Color {
+    /// 0–80% — claude.ai's accent blue (#2A78D6).
+    static let claudeAccent  = Color(red: 42 / 255, green: 120 / 255, blue: 214 / 255)
+    /// 80–90% — claude.ai's warning amber (#FAB219).
+    static let claudeWarning = Color(red: 250 / 255, green: 178 / 255, blue: 25 / 255)
+    /// 90%+ — claude.ai's danger red (#D03B3B).
+    static let claudeDanger  = Color(red: 208 / 255, green: 59 / 255, blue: 59 / 255)
 }
