@@ -26,6 +26,25 @@ struct ContentView: View {
                 .buttonStyle(.borderless)
                 .disabled(usage.isRefreshing)
                 .help("Refresh now")
+
+                Menu {
+                    if let sub = usage.subscriptionType {
+                        Text("Plan: \(sub.capitalized)")
+                    }
+                    Button(usage.needsLogin ? "Connect to Claude…" : "Reconnect…") {
+                        ConnectWindowController.shared.show(store: usage)
+                    }
+                    if !usage.needsLogin {
+                        Button("Disconnect", action: usage.disconnect)
+                    }
+                } label: {
+                    Image(systemName: "gear")
+                        .font(.caption)
+                }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
+                .fixedSize()
+                .help("Account")
             }
 
             Divider()

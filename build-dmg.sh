@@ -19,18 +19,24 @@ SCHEME="Claudicator"
 APP_NAME="Claudicator"
 DMG="${APP_NAME}.dmg"
 
+# Build OUTSIDE the project root. The .xcodeproj uses a synchronized root group
+# (every file under SOURCE_ROOT is a target member), so derived data left inside
+# the repo gets swept back into the target and breaks the build with "Multiple
+# commands produce GeneratedAssetSymbols…". Keep all output in a temp dir.
+DERIVED="$(mktemp -d)/DerivedData"
+
 echo "==> Building ${SCHEME} (Release, ad-hoc signed)…"
 xcodebuild \
   -project "${PROJECT}" \
   -scheme "${SCHEME}" \
   -configuration Release \
-  -derivedDataPath build \
+  -derivedDataPath "${DERIVED}" \
   CODE_SIGN_IDENTITY="-" \
   CODE_SIGN_STYLE=Manual \
   DEVELOPMENT_TEAM="" \
   clean build
 
-APP="build/Build/Products/Release/${APP_NAME}.app"
+APP="${DERIVED}/Build/Products/Release/${APP_NAME}.app"
 if [[ ! -d "${APP}" ]]; then
   echo "ERROR: build did not produce ${APP}" >&2
   exit 1

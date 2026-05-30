@@ -11,15 +11,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		948C0F652FCAD8B7007E324C /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
 		9492A0FC2FC9B5B100B178E7 /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
 		94E697742FC8F74500684841 /* Claudicator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Claudicator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA000002 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		94E697762FC8F74500684841 /*  */ = {
+		94E697762FC8F74500684841 = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			name = "";
 			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -36,6 +36,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		948C0F692FCAD8B7007E324C /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 		9492A1012FC9B5B100B178E7 /* Products */ = {
 			isa = PBXGroup;
 			name = Products;
@@ -44,7 +49,7 @@
 		94E6976B2FC8F74500684841 = {
 			isa = PBXGroup;
 			children = (
-				94E697762FC8F74500684841 /*  */,
+				94E697762FC8F74500684841,
 				94E697752FC8F74500684841 /* Products */,
 				AA000003 /* Frameworks */,
 			);
@@ -82,7 +87,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				94E697762FC8F74500684841 /*  */,
+				94E697762FC8F74500684841,
 			);
 			name = Claudicator;
 			packageProductDependencies = (
@@ -122,6 +127,10 @@
 				{
 					ProductGroup = 9492A1012FC9B5B100B178E7 /* Products */;
 					ProjectRef = 9492A0FC2FC9B5B100B178E7 /* Claudicator.xcodeproj */;
+				},
+				{
+					ProductGroup = 948C0F692FCAD8B7007E324C /* Products */;
+					ProjectRef = 948C0F652FCAD8B7007E324C /* Claudicator.xcodeproj */;
 				},
 			);
 			projectRoot = "";

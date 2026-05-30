@@ -73,6 +73,19 @@ final class UsageStore: ObservableObject {
         }
     }
 
+    /// Sign out: clear the Keychain tokens and reset published state so the
+    /// popover drops back to the "Connect" prompt. Called on the main thread.
+    func disconnect() {
+        OAuthService.shared.disconnect()
+        sessionUsed = nil; sessionResetDate = nil
+        weekUsed = nil; weekResetDate = nil
+        subscriptionType = nil
+        lastFetchedAt = nil
+        lastError = nil
+        backoffUntil = nil
+        needsLogin = true
+    }
+
     // MARK: Networking
 
     private func fetch() async {
