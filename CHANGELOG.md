@@ -9,6 +9,18 @@ and this project aims to follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.4.0] — 2026-05-31
+
+### Changed
+- Project hygiene: removed accumulated recursive self-references from the Xcode
+  project and excluded the project bundle from the synchronized file group, so
+  the working tree stays clean between releases.
+
+_No user-facing app changes — also used to validate that updates now surface in
+front and no longer re-prompt for Keychain access (stable signing from 0.3.0)._
+
+---
+
 ## [0.3.0] — 2026-05-31
 
 ### Fixed
