@@ -6,10 +6,18 @@
 # Users who download the resulting DMG will need to approve it once via
 # System Settings → Privacy & Security → "Open Anyway".
 #
-# Usage:  ./build-dmg.sh
-# Output: ./Claudicator.dmg
+# Usage:
+#   ./build-dmg.sh             Build + sign + write appcast.xml (no publish).
+#   ./build-dmg.sh --release   …then publish a GitHub release vX.Y.Z with the
+#                              DMG + appcast attached, in one step.
+#
+# Output: ./Claudicator.dmg, ./appcast.xml
 #
 set -euo pipefail
+
+# Pass --release to publish a GitHub release after building.
+RELEASE=0
+[[ "${1:-}" == "--release" ]] && RELEASE=1
 
 # Point at the full Xcode (not the Command Line Tools) without needing sudo.
 export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
@@ -112,7 +120,53 @@ cat > "${APPCAST}" <<XML
 </rss>
 XML
 
-echo "==> Done. Attach BOTH to the GitHub release tagged v${VERSION}:"
-echo "      • ${DMG}"
-echo "      • ${APPCAST}"
+if [[ "${RELEASE}" -eq 1 ]]; then
+  TAG="v${VERSION}"
+  echo "==> Publishing ${TAG} to ${GH_REPO}…"
+
+  command -v gh >/dev/null 2>&1 || { echo "ERROR: gh (GitHub CLI) not installed." >&2; exit 1; }
+
+  # The DMG was built from the working tree; the release tag points at the
+  # pushed master HEAD. Refuse to publish if those two could disagree — that
+  # would ship a binary that doesn't match the tagged source. (The DMG and
+  # appcast.xml are gitignored, so they never count as "uncommitted".)
+  if [[ -n "$(git status --porcelain)" ]]; then
+    echo "ERROR: uncommitted changes — commit them so v${VERSION} matches the build." >&2
+    exit 1
+  fi
+  git fetch -q origin master
+  if [[ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ]]; then
+    echo "ERROR: local master differs from origin/master — push first." >&2
+    exit 1
+  fi
+  if gh release view "${TAG}" --repo "${GH_REPO}" >/dev/null 2>&1; then
+    echo "ERROR: release ${TAG} already exists. Bump the version and rebuild." >&2
+    exit 1
+  fi
+
+  # Release notes = this version's section from the CHANGELOG, if present.
+  NOTES="$(awk -v v="${VERSION}" '
+      $0 ~ ("^## \\[" v "\\]")  { grab=1; next }
+      grab && (/^## \[/ || /^---$/) { exit }
+      grab                       { print }
+    ' CHANGELOG.md)"
+  [[ -z "${NOTES//[[:space:]]/}" ]] && NOTES="Release ${TAG}."
+
+  # NOTE: not a pre-release — the feed URL relies on the /releases/latest/
+  # redirect, which excludes pre-releases. --latest keeps the redirect valid.
+  gh release create "${TAG}" \
+    --repo "${GH_REPO}" \
+    --target master \
+    --title "${TAG}" \
+    --latest \
+    --notes "${NOTES}" \
+    "${DMG}" "${APPCAST}"
+
+  echo "==> Released: https://github.com/${GH_REPO}/releases/tag/${TAG}"
+else
+  echo "==> Done. To publish in one step:  ./build-dmg.sh --release"
+  echo "    (or attach these to a GitHub release tagged v${VERSION} manually):"
+  echo "      • ${DMG}"
+  echo "      • ${APPCAST}"
+fi
 ls -lh "${DMG}" "${APPCAST}"

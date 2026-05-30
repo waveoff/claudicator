@@ -10,6 +10,10 @@
 - Live countdown timer to the next reset
 - Menu bar icon that changes color based on how much quota remains
 
+**Who it's for:** primarily Claude Cowork (and Claude.ai) users — unlike Claude
+Code, which surfaces usage in its own window, these clients give no running view
+of remaining quota, so a menu bar readout fills that gap.
+
 Target OS: macOS 13 Ventura+ (MenuBarExtra API)  
 Language: Swift 5.9 + SwiftUI  
 No external dependencies. No backend. All data is local.

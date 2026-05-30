@@ -7,13 +7,26 @@ and this project aims to follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-_Phase 2 / Phase 3 items will accumulate here before the next release._
+---
+
+## [0.2.0] — 2026-05-31
+
+### Changed
+- Release tooling: `./build-dmg.sh --release` now builds, signs, and publishes
+  the GitHub release (DMG + appcast) in a single command.
+- Clarified the target audience (Claude Cowork / Claude.ai users) in the spec
+  and changelog.
+
+_No user-facing app changes — this version also validates the Sparkle
+auto-update flow end-to-end._
 
 ---
 
 ## [0.1.0] — 2026-05-29
 
-First public release — menu bar quota tracker for Claude Code users.[^1]
+First public release — a menu bar quota tracker for Claude users. Especially
+handy for Claude Cowork users, who (unlike Claude Code, which shows usage in its
+own window) have no at-a-glance view of how much quota is left.[^1]
 
 ### Added
 - Menu bar icon and usage popover showing 5-hour session and weekly quota.
