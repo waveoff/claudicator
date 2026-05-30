@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Sparkle reads these two keys from the app bundle at launch. They live in a
+	  physical Info.plist (merged with the auto-generated one via INFOPLIST_FILE)
+	  because Xcode drops arbitrary non-Apple keys passed through INFOPLIST_KEY_*
+	  build settings. All other Info.plist entries are still generated normally.
+	-->
+	<key>SUFeedURL</key>
+	<string>https://github.com/waveoff/claudicator/releases/latest/download/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>+6iSJrKn5y03/HGL+rnmqiSmX7S9yYSqLLTQ+/xP4n4=</string>
+</dict>
+</plist>

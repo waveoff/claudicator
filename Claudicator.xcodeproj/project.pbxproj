@@ -7,19 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		948C106A2FCB8CFF007E324C /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 948C10692FCB8CFF007E324C /* Sparkle */; };
 		AA000001 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA000002 /* WebKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		948C0F652FCAD8B7007E324C /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
+		948C10F92FCB92A9007E324C /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
+		948C11712FCB9627007E324C /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
+		948C11B12FCB97C4007E324C /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
 		9492A0FC2FC9B5B100B178E7 /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
 		94E697742FC8F74500684841 /* Claudicator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Claudicator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA000002 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AA000010 /* Exceptions for "" folder in "Claudicator" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 94E697732FC8F74500684841 /* Claudicator */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		94E697762FC8F74500684841 = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AA000010 /* Exceptions for "" folder in "Claudicator" target */,
+			);
 			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -30,6 +47,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA000001 /* WebKit.framework in Frameworks */,
+				948C106A2FCB8CFF007E324C /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,6 +55,21 @@
 
 /* Begin PBXGroup section */
 		948C0F692FCAD8B7007E324C /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		948C10FD2FCB92A9007E324C /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		948C11762FCB9627007E324C /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		948C11B62FCB97C4007E324C /* Products */ = {
 			isa = PBXGroup;
 			name = Products;
 			sourceTree = "<group>";
@@ -91,6 +124,7 @@
 			);
 			name = Claudicator;
 			packageProductDependencies = (
+				948C10692FCB8CFF007E324C /* Sparkle */,
 			);
 			productName = Claudicator;
 			productReference = 94E697742FC8F74500684841 /* Claudicator.app */;
@@ -120,6 +154,9 @@
 			);
 			mainGroup = 94E6976B2FC8F74500684841;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				948C10682FCB8CFF007E324C /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 94E697752FC8F74500684841 /* Products */;
 			projectDirPath = "";
@@ -131,6 +168,18 @@
 				{
 					ProductGroup = 948C0F692FCAD8B7007E324C /* Products */;
 					ProjectRef = 948C0F652FCAD8B7007E324C /* Claudicator.xcodeproj */;
+				},
+				{
+					ProductGroup = 948C11762FCB9627007E324C /* Products */;
+					ProjectRef = 948C11712FCB9627007E324C /* Claudicator.xcodeproj */;
+				},
+				{
+					ProductGroup = 948C11B62FCB97C4007E324C /* Products */;
+					ProjectRef = 948C11B12FCB97C4007E324C /* Claudicator.xcodeproj */;
+				},
+				{
+					ProductGroup = 948C10FD2FCB92A9007E324C /* Products */;
+					ProjectRef = 948C10F92FCB92A9007E324C /* Claudicator.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -271,17 +320,18 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0.1.0;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ariross.claudicator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -296,17 +346,18 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0.1.0;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ariross.claudicator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -336,6 +387,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		948C10682FCB8CFF007E324C /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		948C10692FCB8CFF007E324C /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 948C10682FCB8CFF007E324C /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 94E6976C2FC8F74500684841 /* Project object */;
 }

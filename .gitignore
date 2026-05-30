@@ -44,6 +44,9 @@ DerivedData/
 # Packaged disk images — distribute via GitHub Releases, not the repo
 *.dmg
 
+# Generated per-release update feed — attached to the GitHub release as an asset
+appcast.xml
+
 # Swift Package Manager
 .build/
 .swiftpm/

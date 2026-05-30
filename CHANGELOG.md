@@ -23,6 +23,9 @@ First public release — menu bar quota tracker for Claude Code users.[^1]
   reset (1-second tick).
 - Color-coded status icon: green / orange / red by remaining quota.
 - Manual refresh button.
+- Automatic in-app updates via Sparkle: background checks against an
+  EdDSA-signed appcast (no App Store / notarization required), plus a
+  "Check for Updates…" menu item.
 - App logging via Console (subsystem `com.ariross.claudicator`).
 
 ---

@@ -4,11 +4,13 @@ import SwiftUI
 @main
 struct ClaudicatorApp: App {
     @StateObject private var usageStore = UsageStore()
+    @StateObject private var updater = UpdaterService()
 
     var body: some Scene {
         MenuBarExtra {
             ContentView()
                 .environmentObject(usageStore)
+                .environmentObject(updater)
                 .frame(width: 280)
         } label: {
             MenuBarLabel(usage: usageStore)
