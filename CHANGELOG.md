@@ -9,6 +9,21 @@ and this project aims to follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.3.0] — 2026-05-31
+
+### Fixed
+- Update windows (manual "Check for Updates…" and background prompts) now come
+  to the front instead of opening behind other apps.
+
+### Changed
+- Builds are now signed with a stable local code-signing identity instead of
+  ad-hoc, so a granted Keychain "Always Allow" keeps working across
+  auto-updates. (Still not Apple-notarized — fresh installs need a one-time
+  Gatekeeper approval, and the 0.2.0 → 0.3.0 update asks for Keychain access
+  once more as the identity changes, then persists.)
+
+---
+
 ## [0.2.0] — 2026-05-31
 
 ### Changed

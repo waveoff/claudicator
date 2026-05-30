@@ -1,9 +1,12 @@
 #!/bin/bash
 #
-# build-dmg.sh — build an unsigned (ad-hoc) Release .app and package it as a DMG.
+# build-dmg.sh — build a self-signed Release .app and package it as a DMG.
 #
 # This is the "Option A" pipeline: no Apple Developer account, no notarization.
-# Users who download the resulting DMG will need to approve it once via
+# The app is signed with a local self-signed cert (SIGN_IDENTITY below) so its
+# code identity is STABLE across versions — that's what lets a granted Keychain
+# "Always Allow" survive auto-updates. It is NOT Apple-notarized, so fresh
+# installs still need a one-time approval via
 # System Settings → Privacy & Security → "Open Anyway".
 #
 # Usage:
@@ -32,19 +35,30 @@ APPCAST="appcast.xml"
 # a single-item appcast describing this build is all Sparkle needs to offer it.
 GH_REPO="waveoff/claudicator"
 
+# Local self-signed code-signing identity (created once in Keychain Access).
+# Must be the SAME every release — that stable identity is what makes Keychain
+# "Always Allow" persist across updates. Override via env if you rename it.
+SIGN_IDENTITY="${SIGN_IDENTITY:-Claudicator Code Signing}"
+if ! security find-identity -p codesigning | grep -q "${SIGN_IDENTITY}"; then
+  echo "ERROR: signing identity '${SIGN_IDENTITY}' not found in your keychain." >&2
+  echo "       Create it: Keychain Access → Certificate Assistant → Create a" >&2
+  echo "       Certificate (Self Signed Root, Code Signing), named exactly that." >&2
+  exit 1
+fi
+
 # Build OUTSIDE the project root. The .xcodeproj uses a synchronized root group
 # (every file under SOURCE_ROOT is a target member), so derived data left inside
 # the repo gets swept back into the target and breaks the build with "Multiple
 # commands produce GeneratedAssetSymbols…". Keep all output in a temp dir.
 DERIVED="$(mktemp -d)/DerivedData"
 
-echo "==> Building ${SCHEME} (Release, ad-hoc signed)…"
+echo "==> Building ${SCHEME} (Release, signed: ${SIGN_IDENTITY})…"
 xcodebuild \
   -project "${PROJECT}" \
   -scheme "${SCHEME}" \
   -configuration Release \
   -derivedDataPath "${DERIVED}" \
-  CODE_SIGN_IDENTITY="-" \
+  CODE_SIGN_IDENTITY="${SIGN_IDENTITY}" \
   CODE_SIGN_STYLE=Manual \
   DEVELOPMENT_TEAM="" \
   clean build
