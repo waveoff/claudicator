@@ -111,6 +111,18 @@ MIN_OS="$(defaults read "${APP}/Contents/Info" LSMinimumSystemVersion 2>/dev/nul
 DMG_URL="https://github.com/${GH_REPO}/releases/download/v${VERSION}/${DMG}"
 PUB_DATE="$(LC_ALL=en_US.UTF-8 date -u "+%a, %d %b %Y %H:%M:%S +0000")"
 
+# This version's CHANGELOG section, reused for the in-app notes AND the GitHub
+# release body. Embedding it inline (below) means Sparkle shows the notes itself
+# instead of loading an external web page into its update window.
+NOTES_MD="$(awk -v v="${VERSION}" '
+    $0 ~ ("^## \\[" v "\\]")  { grab=1; next }
+    grab && (/^## \[/ || /^---$/) { exit }
+    grab                       { print }
+  ' CHANGELOG.md)"
+[[ -z "${NOTES_MD//[[:space:]]/}" ]] && NOTES_MD="Version ${VERSION}."
+# HTML-escape for safe inline rendering; pre-wrap preserves the line breaks.
+NOTES_HTML="$(printf '%s' "${NOTES_MD}" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g')"
+
 echo "==> Signing ${DMG} (EdDSA)…"
 # Emits e.g.:  sparkle:edSignature="…" length="123456"
 SIG_ATTRS="$("${SIGN_UPDATE}" "${DMG}")"
@@ -127,7 +139,7 @@ cat > "${APPCAST}" <<XML
       <sparkle:version>${BUILD}</sparkle:version>
       <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>${MIN_OS}</sparkle:minimumSystemVersion>
-      <sparkle:releaseNotesLink>https://github.com/${GH_REPO}/releases/tag/v${VERSION}</sparkle:releaseNotesLink>
+      <description><![CDATA[<div style="font-family: -apple-system, system-ui, sans-serif; white-space: pre-wrap;">${NOTES_HTML}</div>]]></description>
       <enclosure url="${DMG_URL}" ${SIG_ATTRS} type="application/octet-stream" />
     </item>
   </channel>
@@ -158,13 +170,8 @@ if [[ "${RELEASE}" -eq 1 ]]; then
     exit 1
   fi
 
-  # Release notes = this version's section from the CHANGELOG, if present.
-  NOTES="$(awk -v v="${VERSION}" '
-      $0 ~ ("^## \\[" v "\\]")  { grab=1; next }
-      grab && (/^## \[/ || /^---$/) { exit }
-      grab                       { print }
-    ' CHANGELOG.md)"
-  [[ -z "${NOTES//[[:space:]]/}" ]] && NOTES="Release ${TAG}."
+  # Reuse the same CHANGELOG section computed for the in-app notes above.
+  NOTES="${NOTES_MD}"
 
   # NOTE: not a pre-release — the feed URL relies on the /releases/latest/
   # redirect, which excludes pre-releases. --latest keeps the redirect valid.

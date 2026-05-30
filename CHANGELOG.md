@@ -9,6 +9,14 @@ and this project aims to follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.5.0] — 2026-05-31
+
+### Fixed
+- Update notes now render inline in the updater window instead of loading the
+  full GitHub release page — no more website chrome inside the update prompt.
+
+---
+
 ## [0.4.0] — 2026-05-31
 
 ### Changed
