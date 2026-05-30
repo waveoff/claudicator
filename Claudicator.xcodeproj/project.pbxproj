@@ -16,6 +16,7 @@
 		948C10F92FCB92A9007E324C /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
 		948C11712FCB9627007E324C /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
 		948C11B12FCB97C4007E324C /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
+		948C12B32FCBA357007E324C /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
 		9492A0FC2FC9B5B100B178E7 /* Claudicator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Claudicator.xcodeproj; sourceTree = "<group>"; };
 		94E697742FC8F74500684841 /* Claudicator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Claudicator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA000002 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
@@ -70,6 +71,11 @@
 			sourceTree = "<group>";
 		};
 		948C11B62FCB97C4007E324C /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		948C12B82FCBA357007E324C /* Products */ = {
 			isa = PBXGroup;
 			name = Products;
 			sourceTree = "<group>";
@@ -164,6 +170,10 @@
 				{
 					ProductGroup = 9492A1012FC9B5B100B178E7 /* Products */;
 					ProjectRef = 9492A0FC2FC9B5B100B178E7 /* Claudicator.xcodeproj */;
+				},
+				{
+					ProductGroup = 948C12B82FCBA357007E324C /* Products */;
+					ProjectRef = 948C12B32FCBA357007E324C /* Claudicator.xcodeproj */;
 				},
 				{
 					ProductGroup = 948C0F692FCAD8B7007E324C /* Products */;
