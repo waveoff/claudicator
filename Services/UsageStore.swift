@@ -213,18 +213,19 @@ final class UsageStore: ObservableObject {
         return plain.date(from: s)
     }
 
-    /// "Resets in 1h 54m" / "Resets in 5d 23h" / "Resets soon", computed from
-    /// `date` relative to now. Called at render time (TimelineView), not stored.
-    static func resetString(to date: Date?) -> String {
-        guard let date else { return "Resets —" }
+    /// Compact single-unit countdown for the inline row, e.g. "resets 1h" /
+    /// "resets 4d" / "resets 12m". Rendered at TimelineView tick, not stored,
+    /// so it ticks every minute without republishing the store.
+    static func compactResetString(to date: Date?) -> String {
+        guard let date else { return "resets —" }
         let seconds = Int(date.timeIntervalSinceNow)
-        guard seconds > 0 else { return "Resets soon" }
+        guard seconds > 0 else { return "resets soon" }
         let days  = seconds / 86_400
         let hours = (seconds % 86_400) / 3_600
         let mins  = (seconds % 3_600) / 60
-        if days  > 0 { return "Resets in \(days)d \(hours)h" }
-        if hours > 0 { return "Resets in \(hours)h \(mins)m" }
-        return "Resets in \(mins)m"
+        if days  > 0 { return "resets \(days)d" }
+        if hours > 0 { return "resets \(hours)h" }
+        return "resets \(mins)m"
     }
 }
 

@@ -2,9 +2,14 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var usage: UsageStore
+    @EnvironmentObject private var updater: UpdaterService
+
+    private var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
 
             // Header
             HStack {
@@ -37,6 +42,10 @@ struct ContentView: View {
                     if !usage.needsLogin {
                         Button("Disconnect", action: usage.disconnect)
                     }
+                    Divider()
+                    Button("Check for Updates…", action: updater.checkForUpdates)
+                        .disabled(!updater.canCheckForUpdates)
+                    Text("Version \(appVersion)")
                 } label: {
                     Image(systemName: "gear")
                         .font(.caption)
@@ -49,28 +58,27 @@ struct ContentView: View {
 
             Divider()
 
-            // Session row
-            if let pct = usage.sessionUsed {
-                UsageRowView(
-                    label: "5-hour session",
-                    percent: pct,
-                    resetDate: usage.sessionResetDate
-                )
-            } else {
-                placeholderRow(label: "5-hour session")
-            }
+            // Usage rows, grouped compactly (no divider between them).
+            VStack(alignment: .leading, spacing: 10) {
+                if let pct = usage.sessionUsed {
+                    UsageRowView(
+                        label: "5-hour session",
+                        percent: pct,
+                        resetDate: usage.sessionResetDate
+                    )
+                } else {
+                    placeholderRow(label: "5-hour session")
+                }
 
-            Divider()
-
-            // Weekly row
-            if let pct = usage.weekUsed {
-                UsageRowView(
-                    label: "This week",
-                    percent: pct,
-                    resetDate: usage.weekResetDate
-                )
-            } else {
-                placeholderRow(label: "This week")
+                if let pct = usage.weekUsed {
+                    UsageRowView(
+                        label: "This week",
+                        percent: pct,
+                        resetDate: usage.weekResetDate
+                    )
+                } else {
+                    placeholderRow(label: "This week")
+                }
             }
 
             // Error state

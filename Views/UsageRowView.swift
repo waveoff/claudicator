@@ -9,15 +9,24 @@ struct UsageRowView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack {
+            HStack(spacing: 4) {
                 Text(label)
-                    .font(.caption)
                     .foregroundStyle(.secondary)
-                Spacer()
+                    .lineLimit(1)
+                Spacer(minLength: 6)
                 Text(String(format: "%.0f%% used", percent))
-                    .font(.caption)
                     .fontWeight(.medium)
+                    .fixedSize()
+                // Live countdown inline, re-rendered locally each minute.
+                // TimelineView only updates this subtree — it never republishes
+                // UsageStore, so the MenuBarExtra popover stays stable.
+                TimelineView(.periodic(from: .now, by: 60)) { _ in
+                    Text("· \(UsageStore.compactResetString(to: resetDate))")
+                        .foregroundStyle(.tertiary)
+                        .fixedSize()
+                }
             }
+            .font(.caption)
 
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
@@ -30,15 +39,6 @@ struct UsageRowView: View {
                 }
             }
             .frame(height: 6)
-
-            // Live countdown, re-rendered locally each minute. TimelineView
-            // only updates this subtree — it never republishes UsageStore, so
-            // the MenuBarExtra popover stays stable.
-            TimelineView(.periodic(from: .now, by: 60)) { _ in
-                Text(UsageStore.resetString(to: resetDate))
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-            }
         }
     }
 }
