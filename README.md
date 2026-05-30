@@ -62,8 +62,12 @@ The first time you open it, click **Connect to Claude…**, then:
 
 That's it. 🎉 Your quota appears immediately and stays up to date.
 
-> 💡 **One‑time macOS prompt:** the first time, macOS may ask permission for Claudicator
-> to use its secure storage. Click **Always Allow** and you won't be asked again.
+> 💡 **macOS Keychain prompt:** macOS asks permission for Claudicator to use its
+> secure storage (where your login is kept) — click **Always Allow** and enter your
+> Mac password. Because Claudicator isn't signed with a paid Apple Developer
+> certificate, macOS asks again after each **app update**. That's expected and
+> safe — just click **Always Allow** each time. (Signing the app with a paid Apple
+> Developer certificate would remove this prompt for good.)
 
 ---
 

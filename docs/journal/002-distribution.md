@@ -116,4 +116,4 @@ Until that exists, the Mac App Store is off the table.
 
 ---
 
-<sub>← Previous: [#001 MVP](./001-mvp.md) · Next: _TBD_ · [Journal index](./index.md)</sub>
+<sub>← Previous: [#001 MVP](./001-mvp.md) · Next: [#003 Auto-Updates](./003-auto-updates.md) · [Journal index](./index.md)</sub>
