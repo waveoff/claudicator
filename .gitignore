@@ -41,6 +41,9 @@ DerivedData/
 *.dSYM.zip
 *.dSYM
 
+# Packaged disk images — distribute via GitHub Releases, not the repo
+*.dmg
+
 # Swift Package Manager
 .build/
 .swiftpm/

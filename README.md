@@ -24,6 +24,29 @@ your 5‑hour session and your weekly limit — with a live countdown to the nex
 
 ---
 
+## 📥 Install
+
+### Option 1 — Download the DMG
+
+1. Grab the latest **`Claudicator.dmg`** from the [Releases page](../../releases).
+2. Open it and drag **Claudicator** onto the **Applications** folder.
+3. **First launch only:** because Claudicator isn't signed with a paid Apple
+   Developer certificate, macOS will block it the first time with an
+   *“Apple could not verify…”* message. To approve it:
+   - Open **System Settings → Privacy & Security**, scroll down, and click
+     **Open Anyway** next to Claudicator — then confirm.
+   - (You only do this once. Updates and future launches open normally.)
+
+> 🔒 Prefer not to trust a binary? Claudicator is fully open source — you can
+> read the code and [build your own copy](#-build-from-source) instead.
+
+### Option 2 — Build from source
+
+See [Build from source](#-build-from-source) below. A copy you build yourself is
+signed to run locally and opens with no Gatekeeper prompt.
+
+---
+
 ## 🚀 Getting started
 
 ### 1. Open the app
@@ -78,6 +101,41 @@ three steps again.
 
 **Numbers look stuck**
 Click the **↺ refresh** button in the popover for an instant update.
+
+---
+
+## 🛠 Build from source
+
+Requirements: **Xcode 15+** on **macOS 13+**.
+
+```bash
+git clone https://github.com/<your-username>/claudicator.git
+cd claudicator
+
+# Build a Release .app and package it as Claudicator.dmg
+./build-dmg.sh
+```
+
+Or open `Claudicator.xcodeproj` in Xcode and press **⌘R** to build and run.
+
+A locally built copy is ad-hoc signed, so it launches without the Gatekeeper
+prompt described above.
+
+---
+
+## 🔐 Privacy
+
+Claudicator runs entirely on your Mac. It reads the OAuth token that Claude Code
+stores in your macOS **Keychain** and uses it to call Anthropic's usage endpoint
+(`api.anthropic.com`) directly. Your token is **never** sent anywhere else, and
+there is no analytics, telemetry, or third-party server involved. The source is
+right here for you to verify.
+
+---
+
+## 📄 License
+
+[MIT](LICENSE) © Ari Ross
 
 ---
 
