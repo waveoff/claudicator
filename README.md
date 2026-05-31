@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧠 Claudicator
+# Claudicator
 
 ### Your Claude quota, always one glance away.
 
@@ -17,9 +17,9 @@ your 5‑hour session and your weekly limit — with a live countdown to the nex
 
 | | |
 |---|---|
-| 🔵 **At-a-glance status** | A color‑coded dot — blue, amber, or red — tells you how much you have left without even opening the popover. |
+| 👀 **At-a-glance status** | A small gauge in the menu bar fills as you use your 5‑hour session and turns amber, then red, as you run low — so you can read your quota without even opening the popover. |
 | ⏳ **Live countdown** | See exactly when your 5‑hour session and weekly quota reset. |
-| 🔄 **Auto‑refresh** | Updates quietly every 90 seconds. Hit refresh anytime for an instant check. |
+| 🔄 **Auto‑refresh** | Updates quietly every 2.5 minutes. Hit refresh anytime for an instant check. |
 | 🔐 **Private by design** | Signs in with the same secure flow as Claude Code. Your password never touches the app, and nothing leaves your Mac. |
 
 ---
@@ -50,8 +50,9 @@ signed to run locally and opens with no Gatekeeper prompt.
 ## 🚀 Getting started
 
 ### 1. Open the app
-Claudicator lives in your **menu bar** (top‑right of the screen) — look for the 🧠 icon.
-There's no Dock icon and no window to manage; click the menu bar icon to see your usage.
+Claudicator lives in your **menu bar** (top‑right of the screen) — look for the small
+gauge showing your session's percentage. There's no Dock icon and no window to manage;
+click it to see your usage.
 
 ### 2. Connect your Claude account
 The first time you open it, click **Connect to Claude…**, then:
@@ -104,7 +105,7 @@ Your session may have expired. Just click **Connect to Claude…** and run throu
 three steps again.
 
 **Numbers look stuck**
-Click the **↺ refresh** button in the popover for an instant update.
+Click the **↻ refresh** button in the popover for an instant update.
 
 ---
 
