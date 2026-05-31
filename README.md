@@ -17,7 +17,7 @@ your 5‑hour session and your weekly limit — with a live countdown to the nex
 
 | | |
 |---|---|
-| 🟢 **At-a-glance status** | A color‑coded dot — green, orange, or red — tells you how much you have left without even opening the popover. |
+| 🔵 **At-a-glance status** | A color‑coded dot — blue, amber, or red — tells you how much you have left without even opening the popover. |
 | ⏳ **Live countdown** | See exactly when your 5‑hour session and weekly quota reset. |
 | 🔄 **Auto‑refresh** | Updates quietly every 90 seconds. Hit refresh anytime for an instant check. |
 | 🔐 **Private by design** | Signs in with the same secure flow as Claude Code. Your password never touches the app, and nothing leaves your Mac. |
@@ -73,27 +73,27 @@ That's it. 🎉 Your quota appears immediately and stays up to date.
 
 ## 📊 Reading the numbers
 
-```
-●  Claudicator                    ↺      ← status dot + manual refresh
-────────────────────────────────────
-   5-hour session
-   90%                                   ← how much you have left
-   Resets in 3h 54m                      ← live countdown
-────────────────────────────────────
-   This week
-   78%
-   Resets in 5d 20h
-────────────────────────────────────
-   Updated 5 sec ago               Quit
-```
+<div align="center">
+<img src="docs/popover.png"
+     alt="Claudicator popover: a status dot and title with refresh and settings buttons, then two rows — 5-hour session and This week — each showing the percent used, a progress bar, and a live countdown to reset, above an Updated/Quit footer."
+     width="340">
+</div>
 
-**The colors:**
+Click the menu bar icon to open the popover:
+
+- **Status dot + title** — the dot mirrors your session color (see below). **↻** refreshes
+  right now; **⚙** opens account, plan, and update options.
+- **5-hour session / This week** — each row shows the **percent used**, a progress bar,
+  and a live **countdown** to its next reset.
+- **Footer** — when the data last refreshed, plus **Quit**.
+
+**The colors** (progress bar + status dot):
 
 | Color | Meaning |
 |:---:|---|
-| 🟢 Green | Plenty left (over 50%) |
-| 🟠 Orange | Getting low (20–50%) |
-| 🔴 Red | Almost out (under 20%) |
+| 🔵 Blue | Plenty left (under 80% used) |
+| 🟠 Amber | Getting low (80–90% used) |
+| 🔴 Red | Almost out (over 90% used) |
 
 ---
 
