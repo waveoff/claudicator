@@ -126,4 +126,4 @@ inline now; still raw markdown (`### Fixed`) — prettifying is deferred.
 
 ---
 
-<sub>← Previous: [#002 Distribution](./002-distribution.md) · Next: _TBD_ · [Journal index](./index.md)</sub>
+<sub>← Previous: [#002 Distribution](./002-distribution.md) · Next: [#004 Release Notes Markdown](./004-release-notes-markdown.md) · [Journal index](./index.md)</sub>

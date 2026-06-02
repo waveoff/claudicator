@@ -11,6 +11,7 @@ so the *why* is never lost.
 | [001](./001-mvp.md) | MVP: From WKWebView Crashes to a Working Menu Bar App | 2026-05-29 | MVP / Phase 1 ✅ |
 | [002](./002-distribution.md) | Getting Claudicator onto Other Macs | 2026-05-30 | Distribution + first DMG ✅ |
 | [003](./003-auto-updates.md) | Auto-Updates with Sparkle | 2026-05-31 | In-app auto-updates ✅ |
+| [004](./004-release-notes-markdown.md) | Release Notes That Actually Look Like Release Notes | 2026-06-02 | Markdown→HTML update notes ✅ |
 
 ## Conventions
 
