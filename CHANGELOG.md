@@ -9,6 +9,16 @@ and this project aims to follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.0] — 2026-06-02
+
+### Added
+- App icon: a proper Claudicator icon — the dark squircle quota gauge from the
+  website — now ships with the app, the Dock/launcher, and the installer disk
+  image (the mounted DMG volume shows it too). Drawn on the native macOS icon
+  grid, so it sits right alongside other Mac apps.
+
+---
+
 ## [0.5.0] — 2026-05-31
 
 ### Fixed

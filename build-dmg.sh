@@ -75,6 +75,20 @@ mkdir -p "${STAGE}"
 cp -R "${APP}" "${STAGE}/"
 ln -s /Applications "${STAGE}/Applications"   # drag-to-install target
 
+# Give the mounted volume the same artwork as the app icon (and the website
+# favicon it's derived from). The AppIcon.appiconset PNGs already follow the
+# .iconset naming convention, so we can hand them straight to iconutil — one
+# source of truth, no separate .icns checked into the repo. Placing
+# .VolumeIcon.icns at the volume root + the custom-icon attribute (SetFile -a C)
+# is what makes Finder show it for the DMG instead of the generic disk icon.
+echo "==> Setting volume icon…"
+ICONSET_SRC="Assets.xcassets/AppIcon.appiconset"
+VOL_ICONSET="$(mktemp -d)/Claudicator.iconset"
+mkdir -p "${VOL_ICONSET}"
+cp "${ICONSET_SRC}"/icon_*.png "${VOL_ICONSET}/"
+iconutil -c icns "${VOL_ICONSET}" -o "${STAGE}/.VolumeIcon.icns"
+SetFile -a C "${STAGE}"
+
 echo "==> Creating ${DMG}…"
 rm -f "${DMG}"
 hdiutil create \
