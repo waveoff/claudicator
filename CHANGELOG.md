@@ -9,6 +9,15 @@ and this project aims to follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.1] — 2026-06-02
+
+### Fixed
+- Release notes in the in-app updater now render as formatted text — headings,
+  bullet lists, and _italics_ — instead of the raw markdown (literal `### ` and
+  `- `) the update window showed before.
+
+---
+
 ## [0.6.0] — 2026-06-02
 
 ### Added
