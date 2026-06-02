@@ -1,4 +1,4 @@
-<div align="center">
+
 
 # Claudicator
 
@@ -7,20 +7,22 @@
 A lightweight macOS menu bar app that shows how much **Claude** quota you have left —
 your 5‑hour session and your weekly limit — with a live countdown to the next reset.
 
-<sub>Built with SwiftUI · macOS 13+ · No tracking · Runs entirely on your Mac</sub>
+Built with SwiftUI · macOS 13+ · No tracking · Runs entirely on your Mac
 
-</div>
+
 
 ---
 
 ## ✨ What it does
 
-| | |
-|---|---|
+
+|                           |                                                                                                                                                                             |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 👀 **At-a-glance status** | A small gauge in the menu bar fills as you use your 5‑hour session and turns amber, then red, as you run low — so you can read your quota without even opening the popover. |
-| ⏳ **Live countdown** | See exactly when your 5‑hour session and weekly quota reset. |
-| 🔄 **Auto‑refresh** | Updates quietly every 2.5 minutes. Hit refresh anytime for an instant check. |
-| 🔐 **Private by design** | Signs in with the same secure flow as Claude Code. Your password never touches the app, and nothing leaves your Mac. |
+| ⏳ **Live countdown**      | See exactly when your 5‑hour session and weekly quota reset.                                                                                                                |
+| 🔄 **Auto‑refresh**       | Updates quietly every 2.5 minutes. Hit refresh anytime for an instant check.                                                                                                |
+| 🔐 **Private by design**  | Signs in with the same secure flow as Claude Code. Your password never touches the app, and nothing leaves your Mac.                                                        |
+
 
 ---
 
@@ -28,14 +30,14 @@ your 5‑hour session and your weekly limit — with a live countdown to the nex
 
 ### Option 1 — Download the DMG
 
-1. Grab the latest **`Claudicator.dmg`** from the [Releases page](../../releases).
+1. Grab the latest `**Claudicator.dmg`** from the [Releases page](../../releases).
 2. Open it and drag **Claudicator** onto the **Applications** folder.
 3. **First launch only:** because Claudicator isn't signed with a paid Apple
-   Developer certificate, macOS will block it the first time with an
+  Developer certificate, macOS will block it the first time with an
    *“Apple could not verify…”* message. To approve it:
-   - Open **System Settings → Privacy & Security**, scroll down, and click
-     **Open Anyway** next to Claudicator — then confirm.
-   - (You only do this once. Updates and future launches open normally.)
+  - Open **System Settings → Privacy & Security**, scroll down, and click
+  **Open Anyway** next to Claudicator — then confirm.
+  - (You only do this once. Updates and future launches open normally.)
 
 > 🔒 Prefer not to trust a binary? Claudicator is fully open source — you can
 > read the code and [build your own copy](#-build-from-source) instead.
@@ -50,11 +52,13 @@ signed to run locally and opens with no Gatekeeper prompt.
 ## 🚀 Getting started
 
 ### 1. Open the app
+
 Claudicator lives in your **menu bar** (top‑right of the screen) — look for the small
 gauge showing your session's percentage. There's no Dock icon and no window to manage;
 click it to see your usage.
 
 ### 2. Connect your Claude account
+
 The first time you open it, click **Connect to Claude…**, then:
 
 1. **Open authorization page** — your browser opens to Claude's sign‑in.
@@ -74,27 +78,25 @@ That's it. 🎉 Your quota appears immediately and stays up to date.
 
 ## 📊 Reading the numbers
 
-<div align="center">
-<img src="docs/popover.png"
-     alt="Claudicator popover: a status dot and title with refresh and settings buttons, then two rows — 5-hour session and This week — each showing the percent used, a progress bar, and a live countdown to reset, above an Updated/Quit footer."
-     width="340">
-</div>
+
 
 Click the menu bar icon to open the popover:
 
 - **Status dot + title** — the dot mirrors your session color (see below). **↻** refreshes
-  right now; **⚙** opens account, plan, and update options.
+right now; **⚙** opens account, plan, and update options.
 - **5-hour session / This week** — each row shows the **percent used**, a progress bar,
-  and a live **countdown** to its next reset.
+and a live **countdown** to its next reset.
 - **Footer** — when the data last refreshed, plus **Quit**.
 
 **The colors** (progress bar + status dot):
 
-| Color | Meaning |
-|:---:|---|
-| 🔵 Blue | Plenty left (under 80% used) |
-| 🟠 Amber | Getting low (80–90% used) |
-| 🔴 Red | Almost out (over 90% used) |
+
+| Color    | Meaning                      |
+| -------- | ---------------------------- |
+| 🔵 Blue  | Plenty left (under 80% used) |
+| 🟠 Amber | Getting low (80–90% used)    |
+| 🔴 Red   | Almost out (over 90% used)   |
+
 
 ---
 
@@ -140,10 +142,8 @@ right here for you to verify.
 
 ## 📄 License
 
-[MIT](LICENSE) © Ari Ross
+[MIT](LICENSE) © Waveoff
 
 ---
 
-<div align="center">
-<sub>Claudicator reads your usage from Claude's own quota service. It is an independent tool and is not affiliated with Anthropic.</sub>
-</div>
+Claudicator reads your usage from Claude's own quota service. It is an independent tool and is not affiliated with Anthropic.
