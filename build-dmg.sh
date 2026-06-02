@@ -134,8 +134,54 @@ NOTES_MD="$(awk -v v="${VERSION}" '
     grab                       { print }
   ' CHANGELOG.md)"
 [[ -z "${NOTES_MD//[[:space:]]/}" ]] && NOTES_MD="Version ${VERSION}."
-# HTML-escape for safe inline rendering; pre-wrap preserves the line breaks.
-NOTES_HTML="$(printf '%s' "${NOTES_MD}" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g')"
+# Render the CHANGELOG markdown to lightweight HTML for the appcast description.
+# Pure sed + awk, no dependencies. We HTML-escape &, < and > on the text content
+# FIRST (so user text can't inject markup), then turn a small markdown subset
+# into tags: "### heading" -> <h4>, runs of "- item" -> <ul><li>...</li></ul>,
+# _italic_ -> <em>...</em>, and blank-line-separated prose -> <p>. Lines that wrap
+# (the CHANGELOG hard-wraps at ~80 cols) are joined back into their block.
+NOTES_HTML="$(
+  printf '%s\n' "${NOTES_MD}" \
+    | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' \
+    | awk '
+        # _italic_ -> <em>italic</em> (POSIX match/substr; no gensub needed).
+        function inline(s,   res) {
+          res = ""
+          while (match(s, /_[^_]+_/)) {
+            res = res substr(s, 1, RSTART - 1) \
+                  "<em>" substr(s, RSTART + 1, RLENGTH - 2) "</em>"
+            s = substr(s, RSTART + RLENGTH)
+          }
+          return res s
+        }
+        function flush_item() { if (item != "") { print "<li>" inline(item) "</li>"; item = "" } }
+        function flush_para() { if (para != "") { print "<p>" inline(para) "</p>"; para = "" } }
+        function close_list() { flush_item(); if (in_list) { print "</ul>"; in_list = 0 } }
+        {
+          line = $0
+          indented = (line ~ /^[ \t]/)
+          if (line ~ /^[[:space:]]*$/) {            # blank line ends any block
+            flush_para(); close_list(); next
+          }
+          if (line ~ /^### /) {                      # heading
+            flush_para(); close_list()
+            print "<h4>" inline(substr(line, 5)) "</h4>"; next
+          }
+          if (line ~ /^- /) {                        # bullet starts a list item
+            flush_para(); flush_item()
+            if (!in_list) { print "<ul>"; in_list = 1 }
+            item = substr(line, 3); next
+          }
+          sub(/^[[:space:]]+/, "", line)             # trim leading indent
+          if (in_list && item != "" && indented) {   # wrapped bullet line
+            item = item " " line; next
+          }
+          close_list()                               # non-indented text ends a list
+          para = (para == "" ? line : para " " line) # accumulate paragraph text
+        }
+        END { flush_para(); close_list() }
+      '
+)"
 
 echo "==> Signing ${DMG} (EdDSA)…"
 # Emits e.g.:  sparkle:edSignature="…" length="123456"
@@ -153,7 +199,7 @@ cat > "${APPCAST}" <<XML
       <sparkle:version>${BUILD}</sparkle:version>
       <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>${MIN_OS}</sparkle:minimumSystemVersion>
-      <description><![CDATA[<div style="font-family: -apple-system, system-ui, sans-serif; white-space: pre-wrap;">${NOTES_HTML}</div>]]></description>
+      <description><![CDATA[<div style="font-family: -apple-system, system-ui, sans-serif; line-height: 1.4;">${NOTES_HTML}</div>]]></description>
       <enclosure url="${DMG_URL}" ${SIG_ATTRS} type="application/octet-stream" />
     </item>
   </channel>
