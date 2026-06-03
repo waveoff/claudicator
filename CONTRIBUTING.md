@@ -99,6 +99,37 @@ refresh) is done. Phase 2 (polling loop, countdown, Settings, error states) and
 Phase 3 (low-quota notifications, animated bars, launch-at-login) are good places
 to look for work. Issues labelled **good first issue** are a gentle way in.
 
+## Releasing (maintainers)
+
+Releases are cut locally with `build-dmg.sh` — there is no release automation in
+CI (CI only build-checks). Version bumping is manual and lives in exactly two
+places that must agree:
+
+1. **The app version**, in Xcode → target **Claudicator** → **General** →
+   Version (`MARKETING_VERSION`) and Build (`CURRENT_PROJECT_VERSION`). Bump both.
+   Everything downstream is derived from these — the generated Info.plist's
+   `CFBundleShortVersionString` / `CFBundleVersion`, the git tag (`vX.Y.Z`), the
+   appcast, and the release — so this is the single source of truth.
+2. **`CHANGELOG.md`**, by adding a `## [X.Y.Z]` section. `build-dmg.sh` greps this
+   section by version to fill both the in-app update notes and the GitHub release
+   body. If it's missing, the release ships with no notes (just "Version X.Y.Z.").
+
+Then publish:
+
+```bash
+./build-dmg.sh            # build + sign + write appcast.xml (no publish)
+./build-dmg.sh --release  # …and publish the GitHub release in one step
+```
+
+Notes:
+
+- `CFBundleVersion` (the Build number) is what Sparkle compares to decide whether
+  an update is available. It must increase on every release — never ship two
+  different builds under the same number, or the updater won't offer the second.
+- `--release` refuses to publish if the working tree is dirty or local `master`
+  is behind `origin/master`, so the tagged source always matches the built binary.
+  Commit and push the version bump before releasing.
+
 ## License
 
 By contributing, you agree that your contributions are licensed under the
