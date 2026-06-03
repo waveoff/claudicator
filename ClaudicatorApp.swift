@@ -129,8 +129,8 @@ private struct HalfRing: Shape {
             let t = Double(i) / Double(steps) * clamped          // 0 … clamped
             let theta = (180.0 - 180.0 * t) * .pi / 180.0        // 180°(left) → 0°(right)
             let point = CGPoint(
-                x: center.x + radius * cos(theta),
-                y: center.y - radius * sin(theta)                // −sin: y grows downward
+                x: center.x + radius * CGFloat(cos(theta)),
+                y: center.y - radius * CGFloat(sin(theta))       // −sin: y grows downward
             )
             i == 0 ? path.move(to: point) : path.addLine(to: point)
         }
