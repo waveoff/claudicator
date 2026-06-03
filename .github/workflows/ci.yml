@@ -31,8 +31,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Select Xcode
-        run: sudo xcode-select -switch /Applications/Xcode_16.app/Contents/Developer
+      # Pick the newest Xcode installed on the runner rather than a hard-coded
+      # path — the available versions change as GitHub updates the image, so a
+      # pinned "/Applications/Xcode_16.app" can vanish and fail the job.
+      - name: Select latest Xcode
+        run: |
+          set -euo pipefail
+          latest="$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)"
+          if [ -z "$latest" ]; then latest="/Applications/Xcode.app"; fi
+          echo "Using $latest"
+          sudo xcode-select -switch "$latest/Contents/Developer"
 
       - name: Show versions
         run: |
