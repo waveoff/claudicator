@@ -1,0 +1,58 @@
+name: CI
+
+# Verify Claudicator compiles on every pull request and every push to master.
+# This build is unsigned (CODE_SIGNING_ALLOWED=NO) so it needs no secrets — it
+# only proves the code builds, which is what protects against broken contributions.
+# Signed/notarized release builds are handled separately (see release.yml).
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - ".github/ISSUE_TEMPLATE/**"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - ".github/ISSUE_TEMPLATE/**"
+  workflow_dispatch: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (Release, unsigned)
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Show versions
+        run: |
+          xcodebuild -version
+          swift --version
+
+      # Build OUTSIDE the repo root. The .xcodeproj uses a synchronized root
+      # group, so DerivedData left inside the tree gets swept into the target and
+      # breaks the build ("Multiple commands produce GeneratedAssetSymbols…").
+      # Mirrors the same precaution in build-dmg.sh.
+      - name: Build
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -project Claudicator.xcodeproj \
+            -scheme Claudicator \
+            -configuration Release \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            clean build
+
+      # Once a test target exists, swap the step above for `clean build test`
+      # (or add a separate test job). There are no tests yet.

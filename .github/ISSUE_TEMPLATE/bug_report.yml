@@ -1,0 +1,72 @@
+name: Bug report
+description: Something in Claudicator isn't working as expected.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please fill in what you can —
+        the version and macOS details make a big difference.
+
+        ⚠️ **Not a security issue?** If you've found a vulnerability, please
+        report it privately instead — see [SECURITY.md](../blob/main/SECURITY.md).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, and what you expected instead.
+      placeholder: The menu bar gauge showed 0% even though I had quota left…
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the popover
+        2. Click refresh
+        3. …
+    validations:
+      required: false
+  - type: input
+    id: app-version
+    attributes:
+      label: Claudicator version
+      description: Shown in the popover's ⚙ menu / About. Please update to the latest first.
+      placeholder: e.g. 0.6.1
+    validations:
+      required: true
+  - type: input
+    id: macos-version
+    attributes:
+      label: macOS version
+      placeholder: e.g. 14.5 (Sonoma)
+    validations:
+      required: true
+  - type: dropdown
+    id: chip
+    attributes:
+      label: Mac type
+      options:
+        - Apple Silicon (M-series)
+        - Intel
+        - Not sure
+    validations:
+      required: false
+  - type: dropdown
+    id: connection
+    attributes:
+      label: How did you connect?
+      options:
+        - Read the existing Claude Code token from Keychain
+        - Signed in through the in-app OAuth flow
+        - Not connected yet / connection is the problem
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Optional. Please redact any tokens or personal data.
+    validations:
+      required: false
